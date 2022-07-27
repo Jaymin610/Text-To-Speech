@@ -11,12 +11,12 @@
     <!-- google font -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet" type="text/css" />
 	<!-- icons -->
-    <link href="{% static 'fonts/font-awesome/css/font-awesome.min.css' %} rel="stylesheet" type="text/css"/>
-	<link href={% static "fonts/material-design-icons/material-icon.css" %} rel="stylesheet" type="text/css" />
+    <link href="{% static 'fonts/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'fonts/material-design-icons/material-icon.css' %}" rel="stylesheet" type="text/css" />
     <!-- bootstrap -->
-	<link href={% static "assets/plugins/bootstrap/css/bootstrap.min.css" %} rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
     <!-- style -->
-    <link rel="stylesheet" href={% static "assets/css/pages/extra_pages.css" %}>
+    <link rel="stylesheet" href="{% static 'assets/css/pages/extra_pages.css' %}">
 	<!-- favicon -->
     <link rel="shortcut icon" href="http://radixtouch.in/templates/admin/smart/source/assets/img/favicon.ico" />
 </head>
@@ -30,10 +30,8 @@
     </div>
     <div class="form formLogin">
         <h2>Login to your account</h2>
-        {% if ip %}
-        <form action="http://{{ip}}/submitPannel" method="post">
-            {% endif %}
-            <input name="number" type="text" placeholder="Username" />
+        <form action="/login/" method="post">
+            <input name="email" type="email" placeholder="Email" />
             <input name="password" type="password" placeholder="Password" />
             <div class="remember text-left">
                 <div class="checkbox checkbox-primary">
@@ -50,12 +48,11 @@
     </div>
     <div class="form formRegister">
         <h2>Create an account</h2>
-        <form>
-            <input type="text" placeholder="Username" />
-            <input type="password" placeholder="Password" />
-            <input type="email" placeholder="Email Address" />
-            <input type="text" placeholder="Full Name" />
-            <input type="tel" placeholder="Phone Number" />
+        <form action="/register/" method="post">
+            <input name="u-name" type="text" placeholder="User Name" />
+            <input name="email" type="email" placeholder="Email Address" />
+            <input name="password" type="password" placeholder="Password" />
+            <input name="phoneno" type="tel" placeholder="Phone Number" />
             <button>Register</button>
         </form>
     </div>
@@ -68,9 +65,9 @@
     </div>
 </div>
     <!-- start js include path -->
-    <script src={% static "assets/plugins/jquery/jquery.min.js" %} ></script>
+    <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}" ></script>
 
-    <script src={% static "assets/js/pages/extra-pages/pages.js" %} ></script>
+    <script src="{% static 'assets/js/pages/extra-pages/pages.js' %}" ></script>
     <!-- end js include path -->
 </body>
 
