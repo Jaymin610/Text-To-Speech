@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import *
+from user.songdir.TTS_Code import convert_to_speech
 
 # Create your views here.
 def index(request):
@@ -68,6 +70,23 @@ def addCamp(request):
 def addComposer(request):
     id = request.GET.get('unique')
     print(id)
-    return render(request, 'AddCompo.html')
+    return render(request, 'AddCompo.html', {'id':id})
+
+@csrf_exempt
+def preview_composer(request):
+    if request.method == 'POST':
+        id = request.POST['id']
+        files = request.FILES.getlist('files[]', None)
+        print(files)
+        name = request.POST['excelData']
+        desc = request.POST['Description']
+        api = request.POST['API']
+        lang = request.POST['language']
+        gender = request.POST['gender']
+        f_dir = Campaign.objects.get(id=id).CampaignName
+        f = convert_to_speech(lang, desc, f_dir)
+
+    return JsonResponse({'link': f"/media/{f}"})
+
 
 

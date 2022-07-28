@@ -26,9 +26,33 @@
         <link href="{% static 'assets/css/responsive.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/theme/light/theme-color.css' %}" rel="stylesheet" type="text/css">
         <!-- favicon -->
-        <link rel="shortcut icon" href="http://radixtouch.in/templates/admin/smart/source/assets/img/favicon.ico"> 
+        <link rel="shortcut icon" href="http://radixtouch.in/templates/admin/smart/source/assets/img/favicon.ico">
+        <!-- jquery  -->
+        <link 
     </head>
 <body>
+    <!-- start js include path -->
+    <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}" ></script>
+    <script src="{% static 'assets/plugins/popper/popper.js' %}" ></script>
+    <script src="{% static 'assets/plugins/jquery-blockui/jquery.blockui.min.js' %}" ></script>
+    <script src="{% static 'assets/plugins/jquery-slimscroll/jquery.slimscroll.js' %}"></script>
+    <!-- bootstrap -->
+    <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}" ></script>
+    <!-- Common js-->
+	<script src="{% static 'assets/js/app.js' %}" ></script>
+    <script src="{% static 'assets/js/layout.js' %}" ></script>
+	<script src="{% static 'assets/js/theme-color.js' %}" ></script>
+	<!-- Material -->
+	<script src="{% static 'assets/plugins/material/material.min.js' %}"></script>
+    <script src="{% static 'assets/js/pages/material-select/getmdl-select.js' %}" ></script>
+    <script  src="{% static 'assets/plugins/material-datetimepicker/moment-with-locales.min.js' %}"></script>
+	<script  src="{% static 'assets/plugins/material-datetimepicker/bootstrap-material-datetimepicker.js' %}"></script>
+	<script  src="{% static 'assets/plugins/material-datetimepicker/datetimepicker.js' %}"></script>
+    <!-- dropzone -->
+    <script src="{% static 'assets/plugins/dropzone/dropzone.js' %}" ></script>
+    <script src="{% static 'assets/plugins/dropzone/dropzone-call.js' %}" ></script>
+    <!-- end js include path -->
+
     {% block content %}{% endblock  %}
 </body>
 </html>
