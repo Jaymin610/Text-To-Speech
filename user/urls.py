@@ -11,5 +11,6 @@ urlpatterns = [
     path('addCamp/', views.addCamp, name='addCamp'),
     path('AddComposer/', views.addComposer, name='addCompo'),
     path('preview/', views.preview_composer, name='previewCompo'),
+    path('process/', views.process_composer, name='processCompo'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

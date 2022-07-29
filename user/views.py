@@ -5,6 +5,11 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import *
 from user.songdir.TTS_Code import convert_to_speech
 
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
+import os, csv
+
 # Create your views here.
 def index(request):
     return render(request, "home.html")
@@ -76,17 +81,82 @@ def addComposer(request):
 def preview_composer(request):
     if request.method == 'POST':
         id = request.POST['id']
-        files = request.FILES.getlist('files[]', None)
-        print(files)
-        name = request.POST['excelData']
+        file = request.FILES.get('myfile')
+        num_of_cols = int(request.POST['nocol'])
+        desc = str(request.POST['Description'])
+        api = request.POST['API']
+        lang = request.POST['language']
+        gender = request.POST['gender']
+
+        camp_dir = Campaign.objects.get(id=id).CampaignName
+
+        # Check and save for csv file
+        path = os.getcwd()
+        if not os.path.exists(path + "\\user\\songdir\\" + camp_dir):
+            os.makedirs(path + "\\user\\songdir\\" + camp_dir)
+
+        data = str(file.read())
+        rows = data.split("\\r\\n")
+        my_csv_data = rows[1].split(",")
+
+        chars = []
+
+        asc = 65
+        for i in range(num_of_cols):
+            chars.append("{"+chr(asc)+"}")
+            asc += 1
+
+        for c in range(num_of_cols):
+            desc = desc.replace(f"{chars[c]}", my_csv_data[c])
+        print(desc)
+        f = convert_to_speech(True, lang, desc, camp_dir)
+
+        return JsonResponse({'url':f"/media/{f}"})
+
+@csrf_exempt
+def process_composer(request):
+    if request.method == 'POST':
+
+        id = request.POST['id']
+        file = request.FILES['myfile']
+        num_of_cols = int(request.POST['nocol'])
         desc = request.POST['Description']
         api = request.POST['API']
         lang = request.POST['language']
         gender = request.POST['gender']
-        f_dir = Campaign.objects.get(id=id).CampaignName
-        f = convert_to_speech(lang, desc, f_dir)
 
-    return JsonResponse({'link': f"/media/{f}"})
+        chars = []
+
+        asc = 65
+        for i in range(num_of_cols):
+            chars.append("{" + chr(asc) + "}")
+            asc += 1
+        data = str(file.read())
+        rows = data.split("\\r\\n")
+        jn = desc
+
+        final_script = ""
+        for i in range(1,len(rows)-1):
+            cols = rows[i].split(",")
+            one_line = ""
+            jn = desc
+            for c in range(num_of_cols):
+                jn = jn.replace(f"{chars[c]}", cols[c])
+                if c == num_of_cols - 1:
+                    one_line += jn
+
+            final_script += one_line
+
+        camp_dir = Campaign.objects.get(id=id).CampaignName
+
+        # Check and save for csv file
+        path = os.getcwd()
+        if not os.path.exists(path + "\\user\\songdir\\" + camp_dir):
+            os.makedirs(path + "\\user\\songdir\\" + camp_dir)
+
+        f = convert_to_speech(False, lang, final_script, camp_dir)
+        return JsonResponse({'url': f"/media/{f}"})
+
 
 
 

@@ -47,14 +47,28 @@
                         </div>
                     </div>
                     <div class="card-body" id="bar-parent">
-                        <form action="/process/?unique={{id}}"" method="post" id="form_sample_1" class="form-horizontal"
-                            novalidate="novalidate">
+                        <form action="/process/" method="post" id="form_sample_1" class="form-horizontal"
+                            novalidate="novalidate" enctype="multipart/form-data">
+                            <div class="form-group row" style="display: none;">
+                                <div class="col-md-5">
+                                    <input class="form-control" type="Number" id="id" value={{id}} name="id">
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label class="control-label col-md-3">Excel Data
                                     <span class="required" aria-required="true"> * </span>
                                 </label>
                                 <div class="col-md-5">
-                                    <input class="form-control" type="file" id="formFile" name="excelData">
+                                    <!-- <inppload Excel File></inppload> -->
+                                    <input class="form-control" type="file" id="formFile" name="myfile">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">Number of Column
+                                    <span class="required" aria-required="true"> * </span>
+                                </label>
+                                <div class="col-md-5">
+                                    <input class="form-control" type="number" id="nocol" name="nocol">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -127,24 +141,34 @@
 <script>
     $(document).ready(function () {
         $('#prw').on("click", function () {
-            {% comment %} var file = $('#formFile'); {% endcomment %}
-            var text = $('#text-area').val();
-            var api = $('#api-provider').val();
-            var lang = $('#language').val();
-            var gend = $('#gender').val();
+            var fileSelect = document.getElementById('formFile');
+            var file = fileSelect.files[0];
+            console.log(file);
+            var data = new FormData();
+            data.append("myfile", file);
+            data.append("Description", $('#text-area').val());
+            data.append("API", $('#api-provider').val());
+            data.append("language", $('#language').val());
+            data.append("gender", $('#gender').val());
+            data.append("id", $('#id').val());
+            data.append("nocol", $('#nocol').val());
 
-            var json = { "id":{{id}}, "Description": text, "API": api, "language": lang, "gender": gend };
-            json['files']= $('#formFile');
             $.ajax({
                 type: 'POST',
                 url: "/preview/",
-                data: json,
+                processData: false,
+                contentType: false,
+                mimeType: 'multipart/form-data',
+                data: data,
                 success: function (result) {
+                    result = JSON.parse(result);
+                    console.log(result);
+                    // console.log(result.get('link'));
                     $('#bar-parent').children('.row').remove();
-                    $('#bar-parent').append(`<div class='row'>
+                    $('#bar-parent').append(`<div class='row'>  
                         <audio controls>
-                            ${result['link']}
-                            <source src="${result['link']}" type="audio/mpeg">
+                            ${result['url']}
+                            <source src="${result['url']}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
                     </div>`)
