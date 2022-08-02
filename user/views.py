@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import *
-from user.songdir.TTS_Code import convert_to_speech
+from user.songdir.TTS_Code import convert_to_speech_GTTS, convert_to_speech_PTTS
 
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -81,12 +81,11 @@ def addComposer(request):
 def preview_composer(request):
     if request.method == 'POST':
         id = request.POST['id']
+        mobile = request.POST['mobile']
         file = request.FILES.get('myfile')
         num_of_cols = int(request.POST['nocol'])
         desc = str(request.POST['Description'])
         api = request.POST['API']
-        lang = request.POST['language']
-        gender = request.POST['gender']
 
         camp_dir = Campaign.objects.get(id=id).CampaignName
 
@@ -108,22 +107,29 @@ def preview_composer(request):
 
         for c in range(num_of_cols):
             desc = desc.replace(f"{chars[c]}", my_csv_data[c])
-        print(desc)
-        f = convert_to_speech(True, lang, desc, camp_dir)
 
-        return JsonResponse({'url':f"/media/{f}"})
+        if str(api) == "Google":
+            lang = request.POST['language']
+            f = convert_to_speech_GTTS(True, lang, desc, camp_dir)
+            return JsonResponse({'url':f"/media/{f}"})
+
+        elif str(api) == "Python":
+            gender = request.POST['gender']
+            s_rate = int(request.POST['speech_rate'])
+            f = convert_to_speech_PTTS(True, gender, desc, camp_dir, s_rate)
+            return JsonResponse({'url':f"/media/{f}"})
+
 
 @csrf_exempt
 def process_composer(request):
     if request.method == 'POST':
 
         id = request.POST['id']
+        mobile = request.POST['mobile']
         file = request.FILES['myfile']
         num_of_cols = int(request.POST['nocol'])
         desc = request.POST['Description']
         api = request.POST['API']
-        lang = request.POST['language']
-        gender = request.POST['gender']
 
         chars = []
 
@@ -154,8 +160,16 @@ def process_composer(request):
         if not os.path.exists(path + "\\user\\songdir\\" + camp_dir):
             os.makedirs(path + "\\user\\songdir\\" + camp_dir)
 
-        f = convert_to_speech(False, lang, final_script, camp_dir)
-        return JsonResponse({'url': f"/media/{f}"})
+        if str(api) == "Google":
+            lang = request.POST['language']
+            f = convert_to_speech_GTTS(False, lang, final_script, camp_dir)
+            return JsonResponse({'url':f"/media/{f}"})
+
+        elif str(api) == "Python":
+            gender = request.POST['gender']
+            s_rate = int(request.POST['speech_rate'])
+            f = convert_to_speech_PTTS(False, gender, final_script, camp_dir, s_rate)
+            return JsonResponse({'url': f"/media/{f}"})
 
 
 

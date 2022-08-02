@@ -55,6 +55,14 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label class="control-label col-md-3">Mobile Number
+                                    <span class="required" aria-required="true"> * </span>
+                                </label>
+                                <div class="col-md-5">
+                                    <input class="form-control" type="number" id="mobile" name="mobile">
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label class="control-label col-md-3">Excel Data
                                     <span class="required" aria-required="true"> * </span>
                                 </label>
@@ -96,28 +104,36 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group row">
+                            <div class="form-group row" style="display: none;">
                                 <label class="control-label col-md-3">language
                                     <span class="required" aria-required="true"> * </span>
                                 </label>
                                 <div class="col-md-5">
                                     <select name="language" class="form-control input-height" id="language">
                                         <option value="">Select...</option>
-                                        <option value="English">English</option>
-                                        <option value="Hindi">Hindi</option>
+                                        <option value='en'>English</option>
+                                        <option value='hi'>Hindi</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group row">
+                            <div class="form-group row" style="display: none;">
                                 <label class="control-label col-md-3">Voice Type
                                     <span class="required" aria-required="true"> * </span>
                                 </label>
                                 <div class="col-md-5">
                                     <select class="form-control input-height" name="gender" id="gender">
                                         <option value="">Select...</option>
-                                        <option value="Category 1">Male</option>
-                                        <option value="Category 2">Female</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="form-group row" style="display: none;">
+                                <label class="control-label col-md-3">Speech rate
+                                    <span class="required" aria-required="true"> * </span>
+                                </label>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control input-height" name="rate" id="rate">
                                 </div>
                             </div>
 
@@ -140,18 +156,38 @@
 
 <script>
     $(document).ready(function () {
+
+        $('#api-provider').on("change", function(){
+            var value = $(this).val();
+            var lang = $("#form_sample_1").children(".form-group")[5];
+            var gender = $("#form_sample_1").children(".form-group")[6];
+            var rate = $("#form_sample_1").children(".form-group")[7];
+            
+            if (value == "Google"){
+                gender.style.display="none";
+                rate.style.display="none";
+                lang.style.display="";
+            }
+            else if (value == "Python"){
+                lang.style.display="none";
+                gender.style.display="";
+                rate.style.display="";
+            }
+        });
         $('#prw').on("click", function () {
             var fileSelect = document.getElementById('formFile');
             var file = fileSelect.files[0];
             console.log(file);
             var data = new FormData();
             data.append("myfile", file);
+            data.append("mobile", $('#mobile').val());
             data.append("Description", $('#text-area').val());
             data.append("API", $('#api-provider').val());
             data.append("language", $('#language').val());
             data.append("gender", $('#gender').val());
             data.append("id", $('#id').val());
             data.append("nocol", $('#nocol').val());
+            data.append("speech_rate", $('#rate').val());
 
             $.ajax({
                 type: 'POST',
