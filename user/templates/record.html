@@ -47,37 +47,6 @@
                 </div>
 
                 <div class="card-body ">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-6 col-6">
-                            <div class="btn-group">
-                                <a href="/addCamp/" id="addRow" class="btn btn-info">
-                                    Add New <i class="fa fa-plus"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-6">
-                            <div class="btn-group pull-right">
-                                <a class="btn deepPink-bgcolor  btn-outline dropdown-toggle"
-                                    data-toggle="dropdown">Tools
-                                    <i class="fa fa-angle-down"></i>
-                                </a>
-                                <ul class="dropdown-menu pull-right">
-                                    <li>
-                                        <a href="javascript:;">
-                                            <i class="fa fa-print"></i> Print </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:;">
-                                            <i class="fa fa-file-pdf-o"></i> Save as PDF </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:;">
-                                            <i class="fa fa-file-excel-o"></i> Export to Excel </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
                     <div class="table-scrollable">
                         <div id="example4_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4 no-footer">
                             <div class="row">
@@ -110,18 +79,48 @@
                                                     style="width: 63.6px;">#</th>
                                                 <th class="sorting" tabindex="0" aria-controls="example4" rowspan="1"
                                                     colspan="1" aria-label="Title: activate to sort column ascending"
-                                                    style="width: 180.863px;">Name</th>
+                                                    style="width: 180.863px;">Mobile</th>
+                                                <th class="sorting" tabindex="0" aria-controls="example4" rowspan="1"
+                                                    colspan="1" aria-label="Title: activate to sort column ascending"
+                                                    style="width: 180.863px;">String Data</th>
+                                                <th class="sorting" tabindex="0" aria-controls="example4" rowspan="1"
+                                                    colspan="1" aria-label="Title: activate to sort column ascending"
+                                                    style="width: 180.863px;">API Provider</th>
+                                                <th class="sorting" tabindex="0" aria-controls="example4" rowspan="1"
+                                                    colspan="1" aria-label="Title: activate to sort column ascending"
+                                                    style="width: 180.863px;"></th>
+                                                <th class="sorting" tabindex="0" aria-controls="example4" rowspan="1"
+                                                    colspan="1" aria-label="Title: activate to sort column ascending"
+                                                    style="width: 180.863px;"></th>
+                                                <th class="sorting" tabindex="0" aria-controls="example4" rowspan="1"
+                                                    colspan="1" aria-label="Title: activate to sort column ascending"
+                                                    style="width: 180.863px;">upload request</th>
+                                                <th class="sorting" tabindex="0" aria-controls="example4" rowspan="1"
+                                                    colspan="1" aria-label="Title: activate to sort column ascending"
+                                                    style="width: 180.863px;">upload response</th>
+                                                <th class="sorting" tabindex="0" aria-controls="example4" rowspan="1"
+                                                    colspan="1" aria-label="Title: activate to sort column ascending"
+                                                    style="width: 180.863px;">Voice request</th>
+                                                <th class="sorting" tabindex="0" aria-controls="example4" rowspan="1"
+                                                    colspan="1" aria-label="Title: activate to sort column ascending"
+                                                    style="width: 180.863px;">Voice response</th>
                                                 
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for c in data %}
-                                            <tr class="odd" role="row">
+                                            {% for c in record %}
+                                            <tr style="text-align:center" class="odd" role="row">
                                                 <td class="sorting_1">{{ c.id }}</td>
-                                                <td>{{ c.CampaignName }} 
-                                                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<a href="/composerList?unique={{c.id}}"><button type="button" class="btn deepPink-bgcolor">Record</button></a> 
-                                                    &nbsp; <a href="/AddComposer?unique={{c.id}}"><button type="button" class="btn btn-success"><i class="fa fa-plus"></i> Add </button></a>
-                                                </td>
+                                                <td class="sorting_1">{{ c.mobile }}</td>
+                                                <td class="sorting_1">{{ c.API_Type }}</td>
+                                                <td class="sorting_1"><button id="txt-toggle" type="button" class="btn btn-round btn-danger"> Show text </button><p id="text" class="hide-text" style="display: none;">{{ c.text }}<p></td>
+                                                <td>&nbsp; <a href="/startCamp?id={{ c.id }}"><button type="button" class="btn btn-round btn-primary"> Start </button></a></td>
+                                                <td>&nbsp; <button type="button" class="btn btn-round btn-warning"> Stop </button></td>
+                                                <td class="sorting_1">{{ c.upload_req }}</td>
+                                                <td class="sorting_1">{{ c.upload_res }}</td>
+                                                <td class="sorting_1">{{ c.voiceshoot_req }}</td>
+                                                <td class="sorting_1">{{ c.voiceshoot_res }}</td>
+
                                             </tr>
                                             {% endfor %}
                                         </tbody>
@@ -158,4 +157,24 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $("#txt-toggle").on("click", function(){ 
+            var p = $('#text');
+            if (p.hasClass("hide-text")){
+                $(this).text("Hide Text");
+                p.removeClass('hide-text');
+                p.addClass('show-text');
+                console.log(p.css("display",""));
+            }
+            else if(p.hasClass('show-text')){
+                $(this).text("Show Text");
+                p.removeClass('show-text');
+                p.addClass('hide-text');
+                console.log(p.css("display","none"));
+            }
+            
+        })
+    });
+</script>
 {% endblock %}

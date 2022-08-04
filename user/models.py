@@ -18,6 +18,14 @@ class Campaign(models.Model):
     CampaignStatus = models.CharField(max_length=255, null=True, blank=True)
 
 
-class Services(models.Model):
-    campaign_key = models.ForeignKey(Campaign, on_delete=models.CASCADE, null=True)
-    ServiceName = models.CharField(max_length = 255,null=True,blank=True)
+class Data_Summary(models.Model):
+    recordID = models.ForeignKey(Campaign, on_delete=models.CASCADE, null=True)
+    mobile = models.CharField(max_length=10, null=False, blank=True)
+    text = models.CharField(max_length=255, null=True, blank=True)
+    speechFile = models.CharField(max_length=50, null=True, blank=True)
+    API_Type = models.CharField(max_length=50, null=True, blank=True)
+    upload_req = models.CharField(max_length=255, null=True, blank=True)
+    upload_res = models.JSONField(max_length=255, null=True, blank=True)
+    voiceshoot_req = models.CharField(max_length=255, null=True, blank=True)
+    voiceshoot_res = models.JSONField(max_length=255, null=True, blank=True)
+

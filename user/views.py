@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import JsonResponse
@@ -8,18 +10,21 @@ from user.songdir.TTS_Code import convert_to_speech_GTTS, convert_to_speech_PTTS
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
-import os, csv
+import os, csv, urllib.parse, urllib.request
+
 
 # Create your views here.
 def index(request):
     return render(request, "home.html")
+
 
 def dashboard(request):
     u_name = request.session['uname']
     u_id = User1.objects.get(user_name=u_name)
     data = Campaign.objects.filter(user_key_id=u_id)
     print(data)
-    return render(request, "dashboard.html", {'data':data})
+    return render(request, "dashboard.html", {'data': data})
+
 
 @csrf_exempt
 def register(request):
@@ -59,6 +64,7 @@ def logout(request):
     else:
         return render(request, 'login.html')
 
+
 @csrf_exempt
 def addCamp(request):
     if request.method == 'POST':
@@ -75,7 +81,51 @@ def addCamp(request):
 def addComposer(request):
     id = request.GET.get('unique')
     print(id)
-    return render(request, 'AddCompo.html', {'id':id})
+    return render(request, 'AddCompo.html', {'id': id})
+
+
+def record(request):
+    u_id = request.GET.get('unique')
+    record = Data_Summary.objects.filter(recordID_id=u_id)
+    return render(request, "record.html", {"record": record})
+
+
+def start(request):
+    import requests
+    id = request.GET.get('id')
+    record = Data_Summary.objects.get(id=id)
+    check = record.upload_res
+    if (check is None) or (not check["status"] == "success"):
+        path = record.speechFile
+        upload_url = f"https://obd37.sarv.com/api/voice/upload_announcement.php?username=sr1246&token=LBqos2" \
+                     f"&announcement_path=http%3A%2F%2F138.201.80.23%3A2000%2Fmedia%2F{path}"
+
+        my_request = requests.get(upload_url)
+        announcement_id = my_request.json()["data"][0]["announcement_id"]
+        vc_url = r'https://obd37.sarv.com/api/voice/voice_broadcast.php?username=sr1246&token=LBqos2&plan_id=23315' \
+                 f'&announcement_id={announcement_id}&caller_id=sr1246&contact_numbers={8155045500}&' \
+                 r'retry_json={"FNA":"1","FBZ":0,"FCG":"2","FFL":"1"} '
+        vc_request = requests.get(vc_url)
+
+        record.upload_req = upload_url
+        record.upload_res = my_request.json()
+        record.voiceshoot_req = vc_url
+        record.voiceshoot_res = vc_request.json()
+        record.save()
+    else:
+        announcement_id = check["data"][0]["announcement_id"]
+        vc_url = r'https://obd37.sarv.com/api/voice/voice_broadcast.php?username=sr1246&token=LBqos2&plan_id=23315' \
+                 f'&announcement_id={announcement_id}&caller_id=sr1246&contact_numbers={8155045500}&' \
+                 r'retry_json={"FNA":"1","FBZ":0,"FCG":"2","FFL":"1"} '
+        vc_request = requests.get(vc_url)
+
+        record.voiceshoot_req = vc_url
+        record.voiceshoot_res = vc_request.json()
+        record.save()
+
+    red_id = record.recordID_id
+    return redirect(f"/composerList?unique={red_id}")
+
 
 @csrf_exempt
 def preview_composer(request):
@@ -102,7 +152,7 @@ def preview_composer(request):
 
         asc = 65
         for i in range(num_of_cols):
-            chars.append("{"+chr(asc)+"}")
+            chars.append("{" + chr(asc) + "}")
             asc += 1
 
         for c in range(num_of_cols):
@@ -111,13 +161,13 @@ def preview_composer(request):
         if str(api) == "Google":
             lang = request.POST['language']
             f = convert_to_speech_GTTS(True, lang, desc, camp_dir)
-            return JsonResponse({'url':f"/media/{f}"})
+            return JsonResponse({'url': f"/media/{f}"})
 
         elif str(api) == "Python":
             gender = request.POST['gender']
             s_rate = int(request.POST['speech_rate'])
             f = convert_to_speech_PTTS(True, gender, desc, camp_dir, s_rate)
-            return JsonResponse({'url':f"/media/{f}"})
+            return JsonResponse({'url': f"/media/{f}"})
 
 
 @csrf_exempt
@@ -142,7 +192,7 @@ def process_composer(request):
         jn = desc
 
         final_script = ""
-        for i in range(1,len(rows)-1):
+        for i in range(1, len(rows) - 1):
             cols = rows[i].split(",")
             one_line = ""
             jn = desc
@@ -163,14 +213,14 @@ def process_composer(request):
         if str(api) == "Google":
             lang = request.POST['language']
             f = convert_to_speech_GTTS(False, lang, final_script, camp_dir)
-            return JsonResponse({'url':f"/media/{f}"})
+            url = urllib.parse.quote(f"{f}")
+            Data_Summary.objects.create(mobile=mobile, text=final_script, API_Type=api, speechFile=url, recordID_id=id)
+            return redirect("/dashboard")
 
         elif str(api) == "Python":
             gender = request.POST['gender']
             s_rate = int(request.POST['speech_rate'])
             f = convert_to_speech_PTTS(False, gender, final_script, camp_dir, s_rate)
-            return JsonResponse({'url': f"/media/{f}"})
-
-
-
-
+            url = urllib.parse.quote(f"{f}")
+            Data_Summary.objects.create(mobile=mobile, text=final_script, API_Type=api, speechFile=url, recordID_id=id)
+            return redirect("/dashboard")
