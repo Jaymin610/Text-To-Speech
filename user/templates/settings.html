@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-bar">
+    <div class="page-title-breadcrumb">
+        <div class=" pull-left">
+            <div class="page-title">Settings</div>
+        </div>
+        <ol class="breadcrumb page-breadcrumb pull-right">
+            <li><i class="fa fa-home"></i>&nbsp;<a class="parent-item" href="/dashboard">Home</a>&nbsp;<i
+                    class="fa fa-angle-right"></i>
+            </li>
+            <li class="active">Settings</li>
+        </ol>
+    </div>
+</div>
+<div class="card card-box">
+    <div class="card-head">
+        <header>Campaign Details</header>
+        <button id="panel-button" class="mdl-button mdl-js-button mdl-button--icon pull-right"
+            data-upgraded=",MaterialButton">
+            <i class="material-icons">more_vert</i>
+        </button>
+        <div class="mdl-menu__container is-upgraded">
+            <div class="mdl-menu__outline mdl-menu--bottom-right"></div>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events"
+                data-mdl-for="panel-button" data-upgraded=",MaterialMenu,MaterialRipple">
+                <li class="mdl-menu__item mdl-js-ripple-effect" tabindex="-1" data-upgraded=",MaterialRipple"><i
+                        class="material-icons">assistant_photo</i>Action<span
+                        class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
+                <li class="mdl-menu__item mdl-js-ripple-effect" tabindex="-1" data-upgraded=",MaterialRipple"><i
+                        class="material-icons">print</i>Another action<span
+                        class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
+                <li class="mdl-menu__item mdl-js-ripple-effect" tabindex="-1" data-upgraded=",MaterialRipple"><i
+                        class="material-icons">favorite</i>Something else here<span
+                        class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-body " id="bar-parent">
+        <form action="/settings/" method='post' id="form_sample_1">
+            <div class="form-group row">
+                <label class="control-label col-md-3">Method
+                </label>
+                <div class="col-md-5">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input" name="method" id="SAR" value="SARV">
+                            SARV
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input" name="method" id="oth" value="other">
+                            Other
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" style="display: none;">
+                <label for="simpleFormUrl">Upload Url Domain</label>
+                <input name="domain" type="text" class="form-control" value="{{ sarv.domain }}">
+                <p style="color: #aaa;">Example: https://obd37.sarv.com</p>
+            </div>
+            <div class="form-group" style="display: none;">
+                <label for="simpleFormPassword">Upload Url User Name</label>
+                <input name="username" type="text" class="form-control" value="{{ sarv.u_name }}">
+                <p style="color: #aaa;">Example: sr1246</p>
+            </div>
+            <div class="form-group" style="display: none;">
+                <label for="simpleFormPassword">Token</label>
+                <input name="token" type="text" class="form-control" value="{{ sarv.token }}">
+                <p style="color: #aaa;">Example: Abi12e</p>
+            </div>
+            <div class="form-group" style="display: none;">
+                <label for="simpleFormPassword">Plan ID</label>
+                <input name="plan_id" type="text" class="form-control" value="{{ sarv.plan }}">
+                <p style="color: #aaa;">Example: 23315</p>
+            </div>
+            <div class="form-group" style="display: none;">
+                <label for="simpleFormPassword">Caller ID</label>
+                <input name="caller_id" type="text" class="form-control" value="{{ sarv.caller_id }}">
+                <p style="color: #aaa;">Example: sr1246</p>
+            </div>
+            <div class="form-group" style="display: none;">
+                <label for="simpleFormPassword">Enter your URL</label>
+                <input name="url" type="text" class="form-control" value=" {{ other.voiceshoot_url }}">
+                <p style="color: #aaa;">Place "{mobile}" at mobile parameter value and {mp3Path} at path parameter value <br>E.G. http://abc.xyz.in?mobile={mobile}&path={mp3Path}</p>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.form-check-label').on("change", function () {
+            console.log($("#form_sample_1").children(".form-group")[1])
+            var value = $(this).children('input').val();
+            var domain = $("#form_sample_1").children(".form-group")[1];
+            var uname = $("#form_sample_1").children(".form-group")[2];
+            var token = $("#form_sample_1").children(".form-group")[3];
+            var planid = $("#form_sample_1").children(".form-group")[4];
+            var caller = $("#form_sample_1").children(".form-group")[5];
+            var url = $("#form_sample_1").children(".form-group")[6];
+
+            if (value == "SARV") {
+                url.style.display = "none";
+                domain.style.display = "";
+                uname.style.display = "";
+                token.style.display = "";
+                planid.style.display = "";
+                caller.style.display = "";
+            }
+            else if (value == "other") {
+                url.style.display = "";
+                domain.style.display = "none"
+                uname.style.display = "none";
+                token.style.display = "none";
+                planid.style.display = "none";
+                caller.style.display = "none";
+            }
+        });
+    })
+</script>
+{% endblock %}

@@ -1,15 +1,9 @@
-import pyttsx3
+import os
+import zipfile
 
-engine = pyttsx3.init("sapi5")
-voices = engine.getProperty('voices')
-gender = 'male'
-if gender == 'male':
-    engine.setProperty('voice', voices[0].id)
-else:
-    engine.setProperty('voice', voices[1].id)
+zf = zipfile.ZipFile("myzipfile.zip", "w")
 
-engine.setProperty('rate', 100)  # setting up new voice rate
-engine.setProperty('volume', 0.8)  # setting up volume level  betw
-engine.say("Hello")
-engine.save_to_file("Hello", "jaymin.mp3")
-engine.runAndWait()
+for dirname, subdirs, files in os.walk("./user/songdir/Bonrix_SS/Employee_1"):
+    for filename in files:
+        zf.write(os.path.join(dirname, filename))
+zf.close()

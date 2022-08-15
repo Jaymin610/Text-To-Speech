@@ -22,16 +22,14 @@
 </head>
 <body>
     <div class="form-title">
-    <h1>Login Form</h1>
+    <h1>Login Pannel</h1>
 </div>
 <!-- Login Form-->
 <div class="login-form text-center">
-    <div class="toggle"><i class="fa fa-user-plus"></i>
-    </div>
     <div class="form formLogin">
         <h2>Login to your account</h2>
-        <form action="/login/" method="post">
-            <input name="email" type="email" placeholder="Email" />
+        <form action="/" method="post">
+            <input name="email" type="email" placeholder="Email Address" />
             <input name="password" type="password" placeholder="Password" />
             <div class="remember text-left">
                 <div class="checkbox checkbox-primary">
@@ -42,19 +40,25 @@
                 </div>
             </div>
             <button type="submit">Submit</button>
-            <div class="forgetPassword"><a href="javascript:void(0)">Forgot your password?</a>
-            </div>
         </form>
+        <div class="toggle"><i class="fa fa-user-plus" style="display: none;"></i>Register
+        </div>
+        <div class="forgetPassword"><a href="javascript:void(0)">Forgot your password?</a>
+        </div>
     </div>
+    <!-- <div class="toggle"><i class="fa fa-user-plus" style="display: none;"></i>Register
+    </div> -->
     <div class="form formRegister">
         <h2>Create an account</h2>
         <form action="/register/" method="post">
-            <input name="u-name" type="text" placeholder="User Name" />
+            <input name="u-name" type="text" placeholder="Contact Name" />
             <input name="email" type="email" placeholder="Email Address" />
             <input name="password" type="password" placeholder="Password" />
             <input name="phoneno" type="tel" placeholder="Phone Number" />
             <button>Register</button>
         </form>
+        <div class="toggle"><i class="fa fa-times" style="display: none;"></i> Back to Login
+        </div>
     </div>
     <div class="form formReset">
         <h2>Reset your password?</h2>
@@ -63,6 +67,7 @@
             <button>Send Verification Email</button>
         </form>
     </div>
+    
 </div>
     <!-- start js include path -->
     <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}" ></script>

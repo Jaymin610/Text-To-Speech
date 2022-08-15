@@ -62,23 +62,24 @@ body {
 }
 .login-form .toggle {
   cursor: pointer;
-  position: absolute;
-  top: -0;
-  right: -0;
+  align-items: center;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 10px;
   background: #33b5e5;
-  width: 30px;
-  height: 30px;
-  margin: -5px 0 0;
+  width: 230px;
+  height: 40px;
   color: #ffffff;
   font-size: 12px;
   line-height: 30px;
   text-align: center;
+  padding-top: 8px;
 }
 .login-form .form {
   display: none;
   padding: 40px;
 }
-.login-form .form:nth-child(2) {
+.login-form .form:nth-child(1) {
   display: block;
 }
 .reset

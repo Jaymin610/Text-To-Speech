@@ -8,10 +8,8 @@
                     <div class="page-title">Add Composer</div>
                 </div>
                 <ol class="breadcrumb page-breadcrumb pull-right">
-                    <li><i class="fa fa-home"></i>&nbsp;<a class="parent-item" href="index.html">Home</a>&nbsp;<i
+                    <li><i class="fa fa-home"></i>&nbsp;<a class="parent-item" href="/dashboard">Home</a>&nbsp;<i
                             class="fa fa-angle-right"></i>
-                    </li>
-                    <li><a class="parent-item" href="#">Staff</a>&nbsp;<i class="fa fa-angle-right"></i>
                     </li>
                     <li class="active">Add Composer</li>
                 </ol>
@@ -55,14 +53,24 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-md-3">Mobile Number
-                                    <span class="required" aria-required="true"> * </span>
-                                </label>
+                                <label class="control-label col-md-3">Receiver 
+                                    </label>
                                 <div class="col-md-5">
-                                    <input class="form-control" type="number" id="mobile" name="mobile">
+                                    <div class="form-check">
+                                      <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="compType" id="single_receiver" value="single" >
+                                        single
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="compType" id="multiple_receiver" value="multiple">
+                                        Multiple
+                                      </label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group row">
+                            <div class="form-group row" style="display: none;">
                                 <label class="control-label col-md-3">Excel Data
                                     <span class="required" aria-required="true"> * </span>
                                 </label>
@@ -71,12 +79,24 @@
                                     <input class="form-control" type="file" id="formFile" name="myfile">
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label class="control-label col-md-3">Number of Column
+                            
+                            <div class="form-group row" style="display: none;">
+                                <label class="control-label col-md-3">Mobile Number Column Name
                                     <span class="required" aria-required="true"> * </span>
                                 </label>
                                 <div class="col-md-5">
-                                    <input class="form-control" type="number" id="nocol" name="nocol">
+                                    <input class="form-control" type="text" id="col_Num" name="col_Num">
+                                </div>
+                                <div class="col-md-2">
+                                    <label style="color: #aaa;">The column Alphabet that contains Phone Number i.e. A,B,C </label>
+                                </div>
+                            </div>
+                            <div class="form-group row" style="display: none;">
+                                <label class="control-label col-md-3">Mobile Number
+                                    <span class="required" aria-required="true"> * </span>
+                                </label>
+                                <div class="col-md-5">
+                                    <input class="form-control" type="tel" id="mobile" name="mobile">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -87,15 +107,16 @@
                                     <textarea name="Description" id="text-area" placeholder="Add Composer"
                                         class="form-control-textarea" rows="5"></textarea>
                                 </div>
+                                <div class="col-md-2">
+                                    <label style="color: #aaa;">Place the column alphabet in place of respective variable Example: my name is {A} and your name is {B}. </label>
+                                </div>
                             </div>
-
-
                             <div class="form-group row">
                                 <label class="control-label col-md-3">API Provider
                                     <span class="required" aria-required="true"> * </span>
                                 </label>
                                 <div class="col-md-5">
-                                    <select name="API" class="form-control input-height" id="api-provider">
+                                    <select name="TTSP" class="form-control input-height" id="api-provider">
                                         <option value="">Select...</option>
                                         <option value="Amazon">Amazon</option>
                                         <option value="Google">Google TTS</option>
@@ -113,6 +134,11 @@
                                         <option value="">Select...</option>
                                         <option value='en'>English</option>
                                         <option value='hi'>Hindi</option>
+                                        <option value='gu'>Gujarati</option>
+                                        <option value='ta'>Tamil</option>
+                                        <option value='te'>telugu</option>
+                                        <option value='kn'>Kannad</option>
+                                        <option value='ml'>Malayalam</option>
                                     </select>
                                 </div>
                             </div>
@@ -136,24 +162,6 @@
                                     <input type="number" class="form-control input-height" name="speech_rate" id="rate">
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label class="control-label col-md-3">Voice Call API 
-                                    </label>
-                                <div class="col-md-5">
-                                    <div class="form-check">
-                                      <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="option1" >
-                                        SAR
-                                      </label>
-                                    </div>
-                                    <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="option2">
-                                        OTHER
-                                      </label>
-                                    </div>
-                                </div>
-                            </div>
 
                             <div class="form-actions">
                                 <div class="row">
@@ -175,11 +183,33 @@
 <script>
     $(document).ready(function () {
 
+        let check;
+        $('.form-check-label').on("change", function () {
+            console.log($("#form_sample_1").children(".form-group")[2])
+            var value = $(this).children('input').val();
+            var excel = $("#form_sample_1").children(".form-group")[2];
+            var colname = $("#form_sample_1").children(".form-group")[3];
+            var mobnum = $("#form_sample_1").children(".form-group")[4];
+
+            if (value == "single") {
+                excel.style.display = "none";
+                colname.style.display = "none";
+                mobnum.style.display = "";
+                check = "single";
+            }
+            else if (value == "multiple") {
+                excel.style.display = "";
+                colname.style.display = "";
+                mobnum.style.display = "none";
+                check = "multiple";
+            }
+        });
+
         $('#api-provider').on("change", function(){
             var value = $(this).val();
-            var lang = $("#form_sample_1").children(".form-group")[6];
-            var gender = $("#form_sample_1").children(".form-group")[7];
-            var rate = $("#form_sample_1").children(".form-group")[8];
+            var lang = $("#form_sample_1").children(".form-group")[7];
+            var gender = $("#form_sample_1").children(".form-group")[8];
+            var rate = $("#form_sample_1").children(".form-group")[9];
             
             if (value == "Google"){
                 gender.style.display="none";
@@ -192,19 +222,21 @@
                 rate.style.display="";
             }
         });
+
         $('#prw').on("click", function () {
             var fileSelect = document.getElementById('formFile');
             var file = fileSelect.files[0];
             console.log(file);
             var data = new FormData();
             data.append("myfile", file);
-            data.append("mobile", $('#mobile').val());
+            data.append("compType", check);
             data.append("Description", $('#text-area').val());
-            data.append("API", $('#api-provider').val());
+            data.append("mobile", $('#mobile').val());
+            data.append("TTSP", $('#api-provider').val());
             data.append("language", $('#language').val());
             data.append("gender", $('#gender').val());
             data.append("id", $('#id').val());
-            data.append("nocol", $('#nocol').val());
+            data.append("col_Num", $('#col_Num').val());
             data.append("speech_rate", $('#rate').val());
 
             $.ajax({
