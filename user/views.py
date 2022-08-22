@@ -64,6 +64,12 @@ def logout(request):
         return render(request, 'login.html')
 
 
+def resetPass(request):
+    email = request.POST["email"]
+    user = User1.objects.filter(email=email)[0]
+    print("user")
+
+
 @csrf_exempt
 def addCamp(request):
     if request.method == 'POST':
@@ -267,7 +273,7 @@ def preview_composer(request):
             file = request.FILES.get('myfile')
             data = str(file.read())
             rows = data.split("\\r\\n")
-            my_csv_data = rows[1].split(",")
+            my_csv_data = rows[0].split(",")
 
             chars = []
 
@@ -297,7 +303,6 @@ def preview_composer(request):
 @csrf_exempt
 def process_composer(request):
     if request.method == 'POST':
-
         id = request.POST['id']
         type = request.POST['compType']
         desc = str(request.POST['Description'])
@@ -312,7 +317,7 @@ def process_composer(request):
             chars = []
 
             asc = 65
-            numocol = len(rows[1].split(','))
+            numocol = len(rows[0].split(','))
             for i in range(numocol):
                 chars.append("{" + chr(asc) + "}")
                 asc += 1
@@ -333,17 +338,17 @@ def process_composer(request):
                     cols = rows[i].split(",")
                     for c in range(len(cols) - 1):
                         jn = jn.replace(f"{chars[c]}", cols[c])
-                        print("jn", jn)
                     final += jn
-                    print("final", final)
+
                     mobile = cols[chars.index(mob_num)]
                     f = convert_to_speech_GTTS(False, lang, final, camp_dir, mobile)
                     url = urllib.parse.quote(f"{f}")
 
                     Data_Summary.objects.create(mobile=mobile, text=final, TTS_Provider=ttsp, speechFile=url,
                                                 recordID_id=id)
-                    Campaign.objects.get(id=id).record_count += 1
-                    Campaign.save()
+                    count = Campaign.objects.get(id=id)
+                    count.record_count += 1
+                    count.save()
 
                 return redirect("/dashboard")
 
@@ -356,16 +361,16 @@ def process_composer(request):
                     cols = rows[i].split(",")
                     for c in range(len(cols) - 1):
                         jn = jn.replace(f"{chars[c]}", cols[c])
-                        print("jn", jn)
                     final += jn
-                    print("final", final)
+
                     mobile = cols[chars.index(mob_num)]
                     f = convert_to_speech_PTTS(False, gender, jn, camp_dir, s_rate, mobile)
                     url = urllib.parse.quote(f"{f}")
                     Data_Summary.objects.create(mobile=mobile, text=jn, TTS_Provider=ttsp, speechFile=url,
                                                 recordID_id=id)
-                    Campaign.objects.get(id=id).record_count += 1
-                    Campaign.save()
+                    count = Campaign.objects.get(id=id)
+                    count.record_count += 1
+                    count.save()
         else:
             mob_num = request.POST['mobile']
 
@@ -381,8 +386,9 @@ def process_composer(request):
 
                 Data_Summary.objects.create(mobile=mob_num, text=desc, TTS_Provider=ttsp, speechFile=url,
                                             recordID_id=id)
-                Campaign.objects.get(id=id).record_count += 1
-                Campaign.save()
+                count = Campaign.objects.get(id=id)
+                count.record_count += 1
+                count.save()
                 return redirect("/dashboard")
 
             elif str(ttsp) == "Python":
@@ -393,8 +399,9 @@ def process_composer(request):
                 url = urllib.parse.quote(f"{f}")
                 Data_Summary.objects.create(mobile=mob_num, text=desc, TTS_Provider=ttsp, speechFile=url,
                                             recordID_id=id)
-                Campaign.objects.get(id=id).record_count += 1
-                Campaign.save()
+                count = Campaign.objects.get(id=id)
+                count.record_count += 1
+                count.save()
                 return redirect("/dashboard")
 
 

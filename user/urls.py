@@ -19,5 +19,6 @@ urlpatterns = [
     path('stop/', views.stop, name='stop'),
     path('DownloadZip/', views.DownloadZip, name='DownloadZip'),
     path('pendingAll/', views.pendingAll, name='pendingAll'),
+    path('resetPass/', views.resetPass, name='resetPass'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
